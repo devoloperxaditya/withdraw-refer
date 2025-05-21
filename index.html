@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Withdraw 💸 - User Panel</title>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to right, #e3f2fd, #fce4ec);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: white;
+      padding: 20px 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      width: 320px;
+    }
+    h2 {
+      text-align: center;
+      color: #d81b60;
+    }
+    input, select, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+    button {
+      background-color: #43a047;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+    }
+    button:hover {
+      background-color: #388e3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>💰 Withdraw Request</h2>
+    <input type="text" id="userId" placeholder="Your User ID" required />
+    <select id="method">
+      <option value="bkash">bKash</option>
+      <option value="nagad">Nagad</option>
+    </select>
+    <input type="text" id="number" placeholder="Enter Mobile Number" required />
+    <input type="number" id="amount" placeholder="Enter Amount" required />
+    <button onclick="submitRequest()">Withdraw</button>
+  </div>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDykLjwicFmPloVcHortyFUymlWleivW5g",
+      authDomain: "earn-bd-19cec.firebaseapp.com",
+      projectId: "earn-bd-19cec",
+      storageBucket: "earn-bd-19cec.appspot.com",
+      messagingSenderId: "1055880850952",
+      appId: "1:1055880850952:web:03b49e1313dc36a66c6bbd"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    function submitRequest() {
+      const userId = document.getElementById("userId").value;
+      const method = document.getElementById("method").value;
+      const number = document.getElementById("number").value;
+      const amount = parseInt(document.getElementById("amount").value);
+
+      if (!userId || !method || !number || !amount) {
+        alert("Please fill all the fields!");
+        return;
+      }
+
+      db.collection("withdraw_requests").add({
+        userId: userId,
+        method: method,
+        number: number,
+        amount: amount,
+        status: "Pending",
+        createdAt: new Date()
+      }).then(() => {
+        alert("✅ Withdraw request submitted!");
+        document.getElementById("userId").value = "";
+        document.getElementById("number").value = "";
+        document.getElementById("amount").value = "";
+      }).catch(err => {
+        alert("❌ Error: " + err);
+      });
+    }
+  </script>
+</body>
+</html>
